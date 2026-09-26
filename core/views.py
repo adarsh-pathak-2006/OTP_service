@@ -19,7 +19,7 @@ class DashboardAPI(APIView):
         if cached_data:
             return Response(cached_data, status=200)
         paginator=GeneralPagination()
-        data=paginator.paginate_queryset(Project.objects.select_related('user').filter(user=request.user).order_by("-created_on"))
+        data=paginator.paginate_queryset(Project.objects.select_related('user').filter(user=request.user).order_by("-created_on"), request, view=self)
         serial=ProjectSerializer(data, many=True)
         response=paginator.get_paginated_response(serial.data)
         cache.set(key, response.data, timeout=500)
@@ -34,7 +34,7 @@ class OTPListAPI(APIView):
         if cached_data:
             return Response(cached_data, status=200)
         paginator=GeneralPagination()
-        data=paginator.paginate_queryset(OTP.objects.select_related('project').filter(project__id=pk, project__user=request.user).order_by("-sent_on"))
+        data=paginator.paginate_queryset(OTP.objects.select_related('project').filter(project__id=pk, project__user=request.user).order_by("-sent_on"), request, view=self)
         serial=OTPSerializer(data, many=True)
         response=paginator.get_paginated_response(serial.data)
         cache.set(key, response.data, timeout=500)
