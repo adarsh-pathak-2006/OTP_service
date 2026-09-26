@@ -8,6 +8,7 @@ from .serializer import ProjectSerializer, OTPSerializer
 from .models import Project, OTP
 import random
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from .tasks import sendOTPToEmail
 
 class DashboardAPI(APIView):
     permission_classes=[IsAuthenticated]
@@ -49,6 +50,7 @@ class GetOTPAPI(APIView):
             generated=random.randint(100000, 999999)
             projdata=get_object_or_404(Project.objects.select_related('user'), reference_id=refid)
             serial.save(project=projdata, otp=generated)
+            sendOTPToEmail.delay(email=serial.validated_data['email'], otp=generated)
             return Response(serial.data, status=201)
         return Response(serial.errors, status=400)
     
