@@ -34,7 +34,7 @@ class OTPListAPI(APIView):
         if cached_data:
             return Response(cached_data, status=200)
         paginator=GeneralPagination()
-        data=paginator.paginate_queryset(OTP.objects.select_related('project').filter(project__id=pk))
+        data=paginator.paginate_queryset(OTP.objects.select_related('project').filter(project__id=pk).order_by("-sent_on"))
         serial=OTPSerializer(data, many=True)
         response=paginator.get_paginated_response(serial.data)
         cache.set(key, response.data, timeout=500)
