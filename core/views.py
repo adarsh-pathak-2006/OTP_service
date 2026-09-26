@@ -13,7 +13,7 @@ from .tasks import sendOTPToEmail
 class DashboardAPI(APIView):
     permission_classes=[IsAuthenticated]
     def get(self, request):
-        page_no=request.query_params.get("page_no")
+        page_no=request.query_params.get("page")
         key=projectList_key(pageno=page_no, userid=request.user.id)
         cached_data=cache.get(key=key)
         if cached_data:
@@ -28,13 +28,13 @@ class DashboardAPI(APIView):
 class OTPListAPI(APIView):
     permission_classes=[IsAuthenticated]
     def get(self, request, pk):
-        pageno=request.query_params.get("page_no")
+        pageno=request.query_params.get("page")
         key=OTPList_key(pageno=pageno, projid=pk)
         cached_data=cache.get(key=key)
         if cached_data:
             return Response(cached_data, status=200)
         paginator=GeneralPagination()
-        data=paginator.paginate_queryset(OTP.objects.select_related('project').filter(project__id=pk).order_by("-sent_on"))
+        data=paginator.paginate_queryset(OTP.objects.select_related('project').filter(project__id=pk, project__user=request.user).order_by("-sent_on"))
         serial=OTPSerializer(data, many=True)
         response=paginator.get_paginated_response(serial.data)
         cache.set(key, response.data, timeout=500)

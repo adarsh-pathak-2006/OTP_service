@@ -7,7 +7,7 @@ class ProjectSerializer(ModelSerializer):
     class Meta:
         model=Project
         fields='__all__'
-        read_only_fields=['refrence_id', 'created_on']
+        read_only_fields=['reference_id', 'created_on']
 
 class OTPSerializer(ModelSerializer):
     project=ProjectSerializer(read_only=True)
