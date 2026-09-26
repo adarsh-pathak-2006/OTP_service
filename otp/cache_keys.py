@@ -1,5 +1,5 @@
-def projectList_key(pageno):
-    return f"projectsList_pageno:{pageno}"
+def projectList_key(pageno, userid):
+    return f"projectsList_userid:{userid}_pageno:{pageno}"
 
-def OTPList_key(pageno):
-    return f"OTPList_pageno:{pageno}"
+def OTPList_key(pageno, projid):
+    return f"OTPList_projectid:{projid}_pageno:{pageno}"
