@@ -2,7 +2,7 @@ from rest_framework.serializers import ModelSerializer
 from .models import Project, OTP
 from authentication.serializer import UserGetSerializer
 
-class PRojectSerializer(ModelSerializer):
+class ProjectSerializer(ModelSerializer):
     user=UserGetSerializer(read_only=True)
     class Meta:
         model=Project
@@ -10,7 +10,7 @@ class PRojectSerializer(ModelSerializer):
         read_only_fields=['refrence_id', 'created_on']
 
 class OTPSerializer(ModelSerializer):
-    project=PRojectSerializer(read_only=True)
+    project=ProjectSerializer(read_only=True)
     class Meta:
         model=OTP
         fields='__all__'
