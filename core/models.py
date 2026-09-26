@@ -1,9 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
+import secrets
+
+def generate_token():
+    return secrets.token_urlsafe(16)
 
 class Project(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE)
-    reference_id=models.CharField(max_length=10)
+    reference_id=models.CharField(max_length=32, default=generate_token, unique=True, editable=False)
     project_name=models.CharField(max_length=50, default='New Project')
     description=models.TextField(null=True)
     created_on=models.DateTimeField(auto_now_add=True)
