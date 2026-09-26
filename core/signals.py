@@ -6,10 +6,8 @@ from django.core.cache import cache
 
 @receiver(post_save, sender=Project)
 def projectlistcacheinvalidation(sender, instance, created, **kwargs):
-    for i in range(1, 100):
-        cache.delete(projectList_key(pageno=i, userid=instance.user.id))
+    cache.delete_pattern(f"projectsList_userid:{instance.user.id}_pageno:*")
 
 @receiver(post_save, sender=OTP)
 def otplistcacheinvalidation(sender, instance, created, **kwargs):
-    for i in range(1, 100):
-        cache.delete(OTPList_key(pageno=i, projid=instance.project.id))
+    cache.delete_pattern(f"OTPList_projectid:{instance.project.id}_pageno:*")

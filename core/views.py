@@ -13,7 +13,7 @@ from .tasks import sendOTPToEmail
 class DashboardAPI(APIView):
     permission_classes=[IsAuthenticated]
     def get(self, request):
-        page_no=request.query_params.get("page")
+        page_no=request.query_params.get("page", "1")
         key=projectList_key(pageno=page_no, userid=request.user.id)
         cached_data=cache.get(key=key)
         if cached_data:
@@ -28,7 +28,7 @@ class DashboardAPI(APIView):
 class OTPListAPI(APIView):
     permission_classes=[IsAuthenticated]
     def get(self, request, pk):
-        pageno=request.query_params.get("page")
+        pageno=request.query_params.get("page", "1")
         key=OTPList_key(pageno=pageno, projid=pk)
         cached_data=cache.get(key=key)
         if cached_data:
@@ -43,12 +43,14 @@ class OTPListAPI(APIView):
 class GetOTPAPI(APIView):
     permission_classes=[AllowAny]
     def post(self, request, refid):
-        if not Project.objects.select_related('user').filter(reference_id=refid).exists():
-            return Response({'message':'wrong refid mentioned..entered the correct one'}, status=400)
         serial=OTPSerializer(data=request.data)
         if serial.is_valid():
+            try:
+                projdata=Project.objects.select_related('user').get(reference_id=refid)
+            except Project.DoesNotExist:
+                return Response({'message':'wrong refid mentioned..entered the correct one'}, status=400)
+                
             generated=random.randint(100000, 999999)
-            projdata=get_object_or_404(Project.objects.select_related('user'), reference_id=refid)
             serial.save(project=projdata, otp=generated)
             sendOTPToEmail.delay(email=serial.validated_data['email'], otp=generated)
             return Response({'data':serial.data, 'message':'otp sent on the entered address'}, status=201)
