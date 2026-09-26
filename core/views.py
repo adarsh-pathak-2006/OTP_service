@@ -51,7 +51,7 @@ class GetOTPAPI(APIView):
             projdata=get_object_or_404(Project.objects.select_related('user'), reference_id=refid)
             serial.save(project=projdata, otp=generated)
             sendOTPToEmail.delay(email=serial.validated_data['email'], otp=generated)
-            return Response(serial.data, status=201)
+            return Response({'data':serial.data, 'message':'otp sent on the entered address'}, status=201)
         return Response(serial.errors, status=400)
     
             
