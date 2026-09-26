@@ -157,3 +157,19 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+from datetime import timedelta
+
+# Locate or add this block in your settings.py
+SIMPLE_JWT = {
+    # Increase access token lifetime (e.g., to 1 day or 7 days)
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1), 
+    
+    # Optional: Increase refresh token lifetime if you use them
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    
+    # Make sure this matches your current setup
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'ALGORITHM': 'HS256',
+}

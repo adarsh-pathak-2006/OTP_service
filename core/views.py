@@ -25,6 +25,13 @@ class DashboardAPI(APIView):
         cache.set(key, response.data, timeout=500)
         return response
 
+    def post(self, request):
+        serial=ProjectSerializer(data=request.data)
+        if serial.is_valid():
+            serial.save()
+            return Response(serial.data, status=201)
+        return Response(serial.errors, status=400)
+
 class OTPListAPI(APIView):
     permission_classes=[IsAuthenticated]
     def get(self, request, pk):

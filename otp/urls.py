@@ -22,5 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('authentication/', include('authentication.urls')),
     path('core/', include('core.urls')),
-    path('<str:refid>/', GetOTPAPI.as_view()),
+    path('getotp/<str:refid>/', GetOTPAPI.as_view()),
 ]
